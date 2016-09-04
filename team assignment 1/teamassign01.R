@@ -9,6 +9,13 @@
 ## Your answers may be submitted as an annotated R file. ##
 ###########################################################
 
+#   Team 2     
+#   Hampton Leonard, hll4ce
+#   Tyler Worthington, tjw4ry
+#   Andrew Pomykalski, ajp5sb
+#   Tianye Song, ts7fx
+
+
 ## Start with given x-values
 x <- read.table("teamassign01data.txt")[,1]
 x
@@ -67,9 +74,13 @@ for (i in 1:1000){
 #
 #   (a) Determine and report the mean and variance of the generated coefficients.
 mean(b0vec)
+# 24.99197
 mean(b1vec)
+# 4.000139
 var(b0vec)
+# 21.53321
 var(b1vec)
+# 0.01246831
 
 #   (b) Based on theoretical considerations, what should the mean and variance of the  
 #       generated coefficients be? Explain your answer.
@@ -105,24 +116,77 @@ for (i in 1:1000){
 }
 
 sum(b0tf)/1000
+# Our answer: 0.95
+
 sum(b1tf)/1000
+# Our answer: 0.938
 
-
-
+# Both of the percentages should be 95%.
+# If repeated samples are taken on a certain population, 
+# for 95% of the times, the poplulation mean of the coefficients should fall 
+# within the limits of a 95% confidence interval.
 
 #   (d) Carry out the hypothesis test H0: beta_1 = 4 vs H1: beta_1 not= 4 at a 5% significance level. 
 #       Determine and report the proportion of times that the null hypothesis is rejected, 
 #       implying that beta_1 not= 4.
+testtf <- vector()
+for (i in 1:1000){
+se<-summary(lm.list[[i]])$coef[[4]]
+tzero<-abs((b1vec[i]-4)/se)
+tval<-abs(qt(.025,98))
+testtf[i] <- tzero>tval #if true then reject null hypothesis
+}
+
+sum(testtf)/1000
+# Our answer: 0.062
+# This result signifies that for 6.2% of the times, we reject null hypothesis of beta_1 = 4.
 
 #   (e) For each set of coefficients, find a 95% confidence interval for the mean
 #       response associated with x = 18. Determine and report the percentage of your
 #       intervals that contain the true value. What should the percentage be?
+tfe <- vector()
+for (i in 1:1000){
+  tempCI <- predict(lm.list[[i]],data.frame(x = 18),interval="confidence")
+  if(tempCI[1,2]<=97 & 97<= tempCI[1,3])
+    tfe[i] <- TRUE
+  else
+    tfe[i]<-FALSE
+}
 
-#   (f) For each estimated mean response from part (d), find a corresponding
-#       95% prediction interval for the response y. Generate one random response y based 
+sum(tfe)/1000
+# Our answer: 0.952 
+# The percentage should be 95%.
+# If repeated samples are taken on a certain population, 
+# for 95% of the times, the poplulation mean of the coefficients should fall 
+# within the limits of a 95% confidence interval.
+
+#   (f) For each estimated mean response from part (e), find a corresponding
+#       95% prediction interval for the response y. 
+
+#       Generate one random response y based 
 #       on the true model. Determine and report the percentage of intervals that contain the response.
 #       What should the percentage be?
+tff <- vector()
+for (i in 1:1000){
+  tempPI <- predict(lm.list[[i]],data.frame(x = 18),interval="prediction")
+  yrand <- 25 + 4*18 + rnorm(1, mean=0, sd = 12)
+  if(tempPI[1,2]<= yrand & yrand<= tempPI[1,3])
+    tff[i] <- TRUE
+  else
+    tff[i]<-FALSE
+}
+sum(tff)/1000
+# Our answer: 0.956
+# The percentage should be 95%.
+# Given a certain x value, for 95% of the times, 
+# future observations of y should fall within the limits of a 95% prediction interval.
 
 #   (g) Find and report a 95% confidence interval for sigma^2 by finding the 2.5th and 97.5th 
 #       percentiles of the generated values of MS_Res to give the lower and upper confidence limits.
-
+reslist <- vector()
+for (i in 1:1000){
+  reslist[i] <- anova(lm.list[[i]])$`Mean Sq`[2]
+}
+quantile(reslist, c(.025, .975)) 
+#     2.5%    97.5% 
+# 106.2776 190.6134 

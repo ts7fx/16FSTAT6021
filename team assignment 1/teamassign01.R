@@ -88,11 +88,27 @@ var(b1vec)
 #   (c) Find a 95% confidence interval centered at each coefficient. Determine and report  
 #       the percentage of intervals that contain the true value of the coefficient. 
 #       What should the percentage be?
-t.val <- abs(qt(.025, 98))
-seB1 <- 
-seB0
-CIb0<-vector()
-CIb1<-vector()
+CIs<-lapply(lm.list, confint)
+b0tf <- vector()
+b1tf <- vector()
+
+# for each CI, 
+for (i in 1:1000){
+  if (CIs[[i]][1,1]<=25 & 25<=CIs[[i]][1,2])
+    b0tf[i] <- TRUE
+  else
+    b0tf[i] <- FALSE
+  if (CIs[[i]][2,1]<=4 & 4<=CIs[[i]][2,2])
+    b1tf[i] <- TRUE
+  else
+    b1tf[i] <- FALSE
+}
+
+sum(b0tf)/1000
+sum(b1tf)/1000
+
+
+
 
 #   (d) Carry out the hypothesis test H0: beta_1 = 4 vs H1: beta_1 not= 4 at a 5% significance level. 
 #       Determine and report the proportion of times that the null hypothesis is rejected, 

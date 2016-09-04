@@ -15,7 +15,7 @@ x
 
 ## Generate corresponding y-values according to the model y ~ 25 + 4x + e, where e~N(0,var=12^2)
 y <- 25 + 4*x + rnorm(100, mean=0, sd = 12)
-
+y
 ## Plot the relationship
 plot(x,y, pch=20, cex=0.3)
 
@@ -24,32 +24,31 @@ plot(x,y, pch=20, cex=0.3)
 ## Question 1: ##
 #################
 
- 
-df = data.frame(x,y)
-
-bp.lm <- lm(y~x, data=df)
-class(coef(bp.lm))
-summary(bp.lm)
-
-y_pred <- coef(bp.lm)[1] + coef(bp.lm)[2] * 18
-
-sum(bp.lm$residuals^2)/98 
-
-anova(bp.lm)
-
 # Using the (x,y) from above, generate a linear model. 
-#
+
+df = data.frame(x,y)
+bp.lm <- lm(y~x, data=df)
+
 #   (a) Report the coefficients hat(beta_0) and hat(beta_1).
+
+b0hat = coef(bp.lm)[1]
+b1hat = coef(bp.lm)[2]
+
 #   (b) Report the predicted value of y for x=18.
+
+y_pred <- b0hat + b1hat * 18
+
 #   (c) Report MS_Res.
+
+anova(bp.lm)$`Mean Sq`[2]
 
 
 #################
 ## Question 2: ##
 #################
 
-# Generate the linear model requested in Question 1 1000 times. Create a new vector of y-values 
-# for each repetition.
+# Generate the linear model requested in Question 1 1000 times. 
+# Create a new vector of y-values for each repetition.
 ytemp=list()
 for (i in 1:1000){
   # for each iteration, create a new vector of y-values

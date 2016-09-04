@@ -49,29 +49,64 @@ anova(bp.lm)$`Mean Sq`[2]
 
 # Generate the linear model requested in Question 1 1000 times. 
 # Create a new vector of y-values for each repetition.
-ytemp=list()
+
+# initiate two vectors to keep track of b0hat and b1hat values for each linear model
+b0vec<-vector()
+b1vec<-vector()
+lm.list <- list()
 for (i in 1:1000){
-  # for each iteration, create a new vector of y-values
-  ytemp[i] <-  data.frame(25 + 4*x + rnorm(100, mean=0, sd = 12))
-  # for each iteration, use x & y for that iteration to generate a linear model
+  # for each iteration, create a new vector of y-values & generate a new linear model
+  ytemp <- 25 + 4*x + rnorm(100, mean=0, sd = 12)
+  dftemp <- data.frame(x,ytemp)
+  lm.temp <- lm(ytemp~x, data=dftemp)
+  # store coefficients of each linear model into corresponding location in vectors initiated outside of this for loop
+  b0vec[i] = coef(lm.temp)[1]
+  b1vec[i] = coef(lm.temp)[2]
+  lm.list[[i]] = lm.temp
 }
 #
 #   (a) Determine and report the mean and variance of the generated coefficients.
+mean(b0vec)
+mean(b1vec)
+var(b0vec)
+var(b1vec)
+
 #   (b) Based on theoretical considerations, what should the mean and variance of the  
 #       generated coefficients be? Explain your answer.
+
+# b0hat and b1hat are least square estimators of the parameters of the true regression model.
+# They are also unbiased estimators of the model parameters B0 and B1
+# Thus, theoretically, the mean of the generated coefficients should be the true values of the coefficients
+# of the population regression model, which means:
+#     E{B1hat} = B1 & E{B0hat} = B0
+
+# As for Var{B1hat} & Var{B0hat}, according to the Gauss-Markov Theorem, the least squares estimators have
+# minimum variance when compared with all other unbiased estimators. Thus, the variances of B1hat and B0hat
+# are minimum, hence they are the best linear unbiased estimators.
+
+
 #   (c) Find a 95% confidence interval centered at each coefficient. Determine and report  
 #       the percentage of intervals that contain the true value of the coefficient. 
 #       What should the percentage be?
+t.val <- abs(qt(.025, 98))
+seB1 <- 
+seB0
+CIb0<-vector()
+CIb1<-vector()
+
 #   (d) Carry out the hypothesis test H0: beta_1 = 4 vs H1: beta_1 not= 4 at a 5% significance level. 
 #       Determine and report the proportion of times that the null hypothesis is rejected, 
 #       implying that beta_1 not= 4.
+
 #   (e) For each set of coefficients, find a 95% confidence interval for the mean
 #       response associated with x = 18. Determine and report the percentage of your
 #       intervals that contain the true value. What should the percentage be?
+
 #   (f) For each estimated mean response from part (d), find a corresponding
 #       95% prediction interval for the response y. Generate one random response y based 
 #       on the true model. Determine and report the percentage of intervals that contain the response.
 #       What should the percentage be?
+
 #   (g) Find and report a 95% confidence interval for sigma^2 by finding the 2.5th and 97.5th 
 #       percentiles of the generated values of MS_Res to give the lower and upper confidence limits.
 

@@ -2,7 +2,7 @@
 ## STAT 6021, HW2
 ## 9/6/2016
 #2.20, 2.21, 2.22, 2.30 
-setwd("~/Documents/16FSTAT6021/hw2")
+#setwd("~/Documents/16FSTAT6021/hw2")
 library(gdata)
 
 #2.20

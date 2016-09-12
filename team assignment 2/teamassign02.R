@@ -5,10 +5,6 @@
 #                         #
 ###########################
 
-## Please submit one set of answers per team.            ##
-## Your answers may be submitted as an annotated R file. ##
-###########################################################
-
 #   Team 2     
 #   Hampton Leonard, hll4ce
 #   Tyler Worthington, tjw4ry
@@ -30,8 +26,9 @@ t <-d[sample(c(1:100),100,replace = TRUE), ]
 #   (b) Use your sample to generate a regression equation. Save the values of 
 #       hat(beta_0) and hat(beta_1).
 
-lm.tired<-lm(y~x, data=t)
-summary(lm.tired)
+lm.1<-lm(y~x, data=t)
+hat.b0 = coef(lm.1)[1]
+hat.b1 = coef(lm.1)[2]
 
 # repeat a&b for 1000 times:
 
@@ -51,10 +48,12 @@ for (i in 1:1000){
 #   (c) Find and report a 95% confidence interval for beta_0 and beta_1 by determining
 #       the 2.5th and 97.5th percentiles for each set of values.  Do the confidence 
 #       intervals contain the true parameter values?
-lm.pop <- lm(y~x, data=d)
-coef(lm.pop)
+
 CIB0 <- quantile(b0vec, c(.025, .975)) 
 CIB1 <- quantile(b1vec, c(.025, .975)) 
+# find the true coefficients by doing linear regression on the population
+lm.pop <- lm(y~x, data=d)
+coef(lm.pop)
 # 
 # for B0, true value is 21.27
 # The confidence interval does contain the true parameter value
@@ -90,7 +89,13 @@ length(temp)
 length(subset(temp, temp<=0.05))
 
 
-# repeat a-c for 100 times
+#   (d) Determine and report the proportion of significant variables in the 100
+#       simulations. Compare this proportion with the expected theoretical value.
+
+# initiate a vector that store the number of significant variables.
+# devide the resulting vector by 20, which is the total number of explanatory variables in the model
+# find the mean of that proportion then compare with the expected theoretical value. 
+
 pvec<-vector()
 
 for (i in 1:100){
@@ -102,12 +107,10 @@ for (i in 1:100){
   tempp <- summary(lm.temp)$coefficients[2:21,4]
   pvec[i]<-length(subset(tempp, tempp<=0.05))
 }
-#   (d) Determine and report the proportion of significant variables in the 100
-#       simulations. Compare this proportion with the expected theoretical value.
-# initiate a vector that store the proportion of significant variables over the total number of variables for each iteration. 
-# find the mean of that vector. then compare with the expected theoretical value. 
+mean<-mean(pvec/20)
+# 0.085 for one particular run
+# the expected theoretical value is 0.05, whereas our estimated proportion is 0.085. 
+# Since y was just created randomly and binded to the x matrix any relationship would simply be noise. 
+# However since our cutoff is 5 percent we expect to have a false positive at least 5 percent of the time.
 
-# the expected theoretical value is 0.05, whereas our estimated proportion is 0.03845. 
 
-mean(pvecp)
-mean(pvec)

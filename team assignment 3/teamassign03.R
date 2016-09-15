@@ -18,13 +18,21 @@
 # For this problem you will use the files "teamassign03data01.csv" and "teamassign03data02.csv" to 
 # demonstrate through simulation the effects of multicollinearity on the variance of the regression 
 # coefficients and how they influence the accuracy of predictions.
+data01<- read.csv("teamassign03data01.csv")
+data02<- read.csv("teamassign03data02.csv")
 #
 #   (a) Repeat the following 1000 times:
 #       (1) Select a random sample of 100 observations from data01.
+data01.sample <- data01[sample(c(1:nrow(data01)),100), ]
 #       (2) Fit a linear model to the 100 observations using all four variables. Save the values
 #           of the estimated coefficients in separate vectors.
+lm.data01.sample <- lm(y~., data = data01.sample)
+summary(lm.data01.sample)
+coef(lm.data01.sample)[1:5]
 #       (3) Use your linear model to predict the y-values given in data02 then compute the MSE
 #           using these residuals. Save this value in a vector.
+y.pred <- predict(lm.data01.sample, newdata = data02, type="response")
+data02.temp <- cbind(data02,y.pred)
 #       (4) Compute the standard deviation for the vectors containing the coefficients and compute
 #           the mean of the vector containing the MSEs. Record these values.
 #   (b) Choose a suitable variable to remove from the model. Repeat (1)-(4) given in part (a)

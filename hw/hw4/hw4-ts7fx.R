@@ -11,7 +11,7 @@ setwd("~/Documents/16FSTAT6021/hw/hw3")
 
 data.3.1 <- read.xls("data-table-B1.xls")
 lm.3.1 <- lm(y~x2+x7+x8, data=data.3.1)
-par(mfrow=c(3,3))
+par(mfrow=c(2,3))
 
 #a)
 # investigation will be based on the above linear model 
@@ -47,6 +47,7 @@ data.3.5 <- read.xls("data-table-B3.xls")
 lm.3.5 <- lm(y~x1 + x6, data=data.3.5)
 
 #a)
+par(mfrow=c(2,1))
 # plotting normality plot:
 qqnorm(rstudent(lm.3.5))
 qqline(rstudent(lm.3.5))
@@ -70,12 +71,12 @@ rstudent(lm.3.5)
 # the 12th and 15th observations seem to be possible outliers.
 
 #4.8
+#a)
+setwd("~/Documents/16FSTAT6021/hw/hw2")
+par(mfrow=c(3,1))
 # q2.12
 usage <- read.xls("data-prob-2-12.XLS")
 lm.4 <- lm(usage~temp,data=usage)
-
-#a)
-
 # plotting normality plot:
 qqnorm(rstudent(lm.4))
 qqline(rstudent(lm.4))
@@ -92,6 +93,9 @@ plot(lm.4$residuals, xlab = "obervation order",main = "y vs. residuals")
 
 
 #4.25
+setwd("~/Documents/16FSTAT6021/hw/hw3")
+par(mfrow=c(3,1))
+
 # load model and data
 data.3.16 <- read.xls("data-table-B16.xls")
 lm.total<-lm(LifeExp~People.per.TV+People.per.Dr,data=data.3.16)
@@ -116,6 +120,8 @@ plot(lm.female$fitted.values,resid(lm.female), main = "female")
 
 #4.29
 # using model from q2.22
+setwd("~/Documents/16FSTAT6021/hw/hw2")
+par(mfrow=c(2,1))
 conv <- read.xls("data-table-B20.XLS")
 colnames(conv) <-c("x1","x2","x3","x4","x5","y")
 # remove insignificant regressors one by one.
@@ -138,6 +144,8 @@ plot(lm.4.29$fitted.values,resid(lm.4.29), main = "y vs residuals")
 
 
 #5.2
+par(mfrow=c(3,1))
+
 data.5.2 = data.frame(c(273,283,293,303,313,323,333,343,353,363,373),
                       c(4.6,9.2,17.5,31.8,55.3,92.5,149.4,233.7,355.1,525.8,760))
 colnames(data.5.2) <- c("temp","pressure")
@@ -191,6 +199,8 @@ summary(lm.5.2.c)
 # F-statistic: 6.672e+04 on 1 and 9 DF,  p-value: < 2.2e-16
 
 # the r-squared improved dramatically. Now nearly all of the variation in y can be explained by x. 
+par(mfrow=c(2,1))
+
 qqnorm(rstudent(lm.5.2.c))
 qqline(rstudent(lm.5.2.c))
 plot(lm.5.2.c$fitted.values,resid(lm.5.2.c), main = "y vs residuals")
@@ -220,6 +230,8 @@ summary(lm.5.5)
 # according to summary statistics, the linear model is modeling the data pretty-well.
 
 # however, whether the data is best modeled using a linear model remains unknown. Thus, I need residual analysis.
+par(mfrow=c(1,1))
+
 plot(lm.5.5$fitted.values,resid(lm.5.5), main = "y vs residuals")
 # there appears to be a nonlinear pattern of the residuals vs predicted value plot. Thus, a linear model may not be the best choice.
 
@@ -243,6 +255,8 @@ summary(lm.5.5.b)
 # there is an all-around improvement in summary statistics
 
 # now let's check to see if there's a linear relationship.
+par(mfrow=c(2,1))
+
 plot(lm.5.5.b$fitted.values,resid(lm.5.5.b), main = "y vs residuals")
 qqnorm(rstudent(lm.5.5.b))
 qqline(rstudent(lm.5.5.b))
@@ -254,6 +268,7 @@ qqline(rstudent(lm.5.5.b))
 #5.7 
 # recall 4.29
 conv <- read.xls("data-table-B20.XLS")
+colnames(conv) <-c("x1","x2","x3","x4","x5","y")
 lm.4.29 <- lm(y~.-x4-x5, data = conv)
 
 # try to take the natural log for y
@@ -310,8 +325,10 @@ summary(lm.5.9)
 # F-statistic:  87.6 on 2 and 33 DF,  p-value: 6.316e-14
 
 # both regressors seem to be significant.
+par(mfrow=c(2,2))
 
 # test for normality
+
 qqnorm(rstudent(lm.5.9))
 qqline(rstudent(lm.5.9))
 # there is a heavy-tailed pattern. Normality is absent.
@@ -330,7 +347,9 @@ plot(data.5.9$x2,resid(lm.5.9), main = "x2 vs. residuals")
 # Thus, it makes sense to try to transform y by taking sqrt of it.
 data.5.9$newy <- sqrt(data.5.9$y)
 lm.5.9b <- lm(newy~x2, data = data.5.9)
-
+qqnorm(rstudent(lm.5.9b))
+qqline(rstudent(lm.5.9b))
+# instead of a heavy tailed pattern, now we have a light tailed pattern for normality check. This is good because this illustrates we're simply being conservative.
 plot(lm.5.9b$fitted.values,resid(lm.5.9b), main = "y vs residuals")
 plot(data.5.9$x2,resid(lm.5.9b), main = "x2 vs. residuals")
 
@@ -339,6 +358,7 @@ plot(data.5.9$x2,resid(lm.5.9b), main = "x2 vs. residuals")
 #5.10
 data.5.10 <- read.xls("data-table-B9.xls")
 lm.5.10 <- lm(y~., data = data.5.10)
+par(mfrow=c(3,2))
 
 # generate residual plots
 qqnorm(rstudent(lm.5.10))

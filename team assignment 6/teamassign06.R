@@ -74,4 +74,6 @@ write.table(predvect, file="teamassign06preds.csv", row.names=F, col.names=F, se
 # 29 health - current health status (numeric: from 1 - very bad to 5 - very good)
 # 30 absences - number of school absences (numeric: from 0 to 93)
 # 31 Grade (numeric: from 0 to 20)
-
+library(readr)
+train<-read_csv('teamassign06train.csv')
+test<-read_csv('teamassign06test.csv')

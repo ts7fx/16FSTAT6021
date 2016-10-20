@@ -1,38 +1,11 @@
+# team assignment 6
 
-###########################
-#                         #
-#   Team Assignment 6     #
-#                         #
-###########################
+#   Team 2     
+#   Hampton Leonard, hll4ce
+#   Tyler Worthington, tjw4ry
+#   Andrew Pomykalski, ajp5sb
+#   Tianye Song, ts7fx
 
-## Please submit one set of answers per team.                                  ##
-## Your answers should be submitted as a .csv file per the instructions below. ##
-## You should also submit your annotated R code per the instructions below.    ##
-#################################################################################
-
-
-# For this team assignment you will use the file "teamassign06train.csv" to develop
-# a linear model using whatever methods you consider appropriate. You will then use
-# the model that you have developed to predict the values of the response variable
-# corresponding to the explanatory variable values given in the file
-# "teamassign06test.csv". 
-#
-# These data are from Portugal and record students' grade along with 30 explanatory 
-# variables describing the student and family. The list of variables is included
-# at the end of this assignment.
-#
-# Once you have predicted the values of the response variable for the testing set,
-# you should save them to a vector called predvect and write them into a .csv file 
-# using the following code:
-write.table(predvect, file="teamassign06preds.csv", row.names=F, col.names=F, sep=",")
-#
-# Your annotated R code should explain the reasoning behind your choices in 
-# model selection and should be neatly organized.
-#
-# Your grade on this team assignment will be based on how well your model predicts
-# the observed values relative to the other teams.
-#
-#
 # List of variables:
 # 1 school - student's school (binary: 'GP' or 'MS')
 # 2 sex - student's sex (binary: 'F' - female or 'M' - male)
@@ -74,6 +47,46 @@ write.table(predvect, file="teamassign06preds.csv", row.names=F, col.names=F, se
 # 29 health - current health status (numeric: from 1 - very bad to 5 - very good)
 # 30 absences - number of school absences (numeric: from 0 to 93)
 # 31 Grade (numeric: from 0 to 20)
+setwd("~/Documents/git/16FSTAT6021")
 library(readr)
-train<-read_csv('teamassign06train.csv')
-test<-read_csv('teamassign06test.csv')
+train<-read_csv('team assignment 6/teamassign06train.csv')
+test<-read_csv('team assignment 6/teamassign06test.csv')
+# check for missing values:
+sum(is.na(train))
+sum(is.na(test)) 
+# both give zero, thus no missing values.
+
+# this is a prediction question. what are we predicting? 
+# response variable: col 31 Grade (numeric: from 0 to 20)
+# what are the performance indeces for prediction problems?
+
+# first check out what are variable classes
+apply(train,2,class)
+# school         sex         age     address     famsize     Pstatus        Medu        Fedu        Mjob        Fjob 
+# "character" "character" "character" "character" "character" "character" "character" "character" "character" "character" 
+# reason    guardian  traveltime   studytime    failures   schoolsup      famsup        paid  activities     nursery 
+# "character" "character" "character" "character" "character" "character" "character" "character" "character" "character" 
+# higher    internet    romantic      famrel    freetime       goout        Dalc        Walc      health    absences 
+# "character" "character" "character" "character" "character" "character" "character" "character" "character" "character" 
+# Grade 
+# "character" 
+
+# a lot of categorical variables. logistic regression?
+
+# first things first. convert categorical variables to factors:
+cols <- colnames(train)[-c(3,31)]
+train[,cols]<- lapply(train[,cols], factor)
+
+
+
+
+
+
+
+
+
+# Once you have predicted the values of the response variable for the testing set,
+# you should save them to a vector called predvect and write them into a .csv file 
+# using the following code:
+write.table(predvect, file="teamassign06preds.csv", row.names=F, col.names=F, sep=",")
+

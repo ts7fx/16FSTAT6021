@@ -49,13 +49,16 @@
 # 31 Grade (numeric: from 0 to 20)
 setwd("~/Documents/git/16FSTAT6021")
 library(readr)
+library(nnet)
+library(lars)
+
 train<-read_csv('team assignment 6/teamassign06train.csv')
 test<-read_csv('team assignment 6/teamassign06test.csv')
 # check for missing values:
 sum(is.na(train))
 sum(is.na(test)) 
 # both give zero, thus no missing values.
-
+plot(train$absences,train$Grade)
 # this is a prediction question. what are we predicting? 
 # response variable: col 31 Grade (numeric: from 0 to 20)
 # what are the performance indeces for prediction problems?
@@ -74,11 +77,36 @@ apply(train,2,class)
 # a lot of categorical variables. logistic regression?
 
 # first things first. convert categorical variables to factors:
-cols <- colnames(train)[-c(3,31)]
+cols <- colnames(train)[-c(3,31,30)]
 train[,cols]<- lapply(train[,cols], factor)
+summary(train)
+
+sth <- multinom(Grade~school, data=train)
 
 
+summary(sth)
 
+lm.full <- lm(Grade~.,data = train)
+lm.null <- lm(Grade~1, data = train)
+step(lm.null, scope=list(lower=lm.null, upper=lm.full), direction="both")
+step(lm.null, scope=list(lower=lm.null, upper=lm.full), direction="forward")
+step(lm.full, scope=list(lower=lm.null, upper=lm.full), direction="backward")
+
+lm.re <- lm(Grade ~ failures + higher + school + sex + schoolsup + goout + internet + studytime + Fedu + famrel, data = train)
+train$pred <- predict(lm.re, newdata = train)
+plot(residuals(lm.re))
+
+
+train$testy <- log(train$Grade)
+
+## trying lasso
+lasso.predictors = as.matrix(train[,-31])
+train$Grade <- as.numeric(train$Grade)
+lasso.response = as.numeric(train$Grade)
+lasso.fit = lars(lasso.predictors, lasso.response, type = "lasso")
+coef(lasso.fit)
+lasso.fit$lambda
+##
 
 
 

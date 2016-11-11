@@ -7,6 +7,9 @@
 #   Tianye Song, ts7fx
 library(readr)
 library(plyr)
+library(MASS)
+library(car)
+
 # https://www.lendingclub.com/info/download-data.action  <-- download data
 setwd("~/Downloads")
 
@@ -111,5 +114,70 @@ declined$`Application Date` <- as.yearqtr(declined$`Application Date`, "%Y-%m-%d
 accepted <- accepted[!is.na(accepted$`Application Date`),]
 
 # concatenation of the two dataframes. 
+loan <- rbind(accepted, declined)
+
+# now it's time for analysis.
+
+
+# library(MASS)
+# 
+# # use random 75% of the rows for training
+# train.indices = sample(1:nrow(loan), as.integer(nrow(loan) * 0.75))
+# 
+# # fit lda model
+# lda.fit = lda(result ~ ., data = loan[train.indices, ])
+# 
+# # predict on held-out 25% and evaluate raw accuracy
+# predictions = predict(lda.fit, newdata = loan[-train.indices, ])
+# num.correct = sum(predictions$class == loan[-train.indices,]$'accepted?')
+# accuracy = num.correct / nrow(iris[-train.indices, ])
+# accuracy
+
+
+# logistic regression
+# renaming
+colnames(loan) <- c('amt_request', 'title', 'dti', 'state', 'emp_length', 'pol_code', 'date', 'result')
+log.fit = glm(result ~ ., data = loan, family="binomial")
+summary(log.fit)
+log.fit.2 = glm(result ~ .-state, data = loan, family="binomial")
+
+log.fit.3 = glm(result ~ .-state -date -pol_code, data = loan, family="binomial")
+summary(log.fit.3)
+
+vif(log.fit.3)
+#                 GVIF Df GVIF^(1/(2*Df))
+# amt_request 1.104458  1        1.050932
+# title       1.095492 13        1.003514
+# dti         1.044612  1        1.022062
+# emp_length  1.083903 11        1.003669
+
+# no multicollinearity. our variables are good.
+
+# k-fold CV
+loan[loan$title == 'educational',]$title = 'other'
+loan[loan$title == 'wedding',]$title = 'other'
+cv.lm(data=loan, form.lm=log.fit.3, m=5, plotit=F)
+cv.binary(log.fit.3, nfolds = 5)
+summary(factor(loan$title))
+
+# Internal estimate of accuracy = 0.936
+# Cross-validation estimate of accuracy = 0.936
+
+# odds
+
+
+#testing on 2016 
+
+
+
+#classification rate
+
+
+# ROC curves
+
+
+
+
+
 
 

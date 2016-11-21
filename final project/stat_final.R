@@ -33,6 +33,7 @@ accepted <- read_csv('LoanStats3d.csv', skip = 1) # skip the first line where th
 accepted = rename(accepted, c("loan_amnt"="Amount Requested", "purpose"="Loan Title", "dti" = "Debt-To-Income Ratio", 
                    "addr_state" = "State", "emp_length" = "Employment Length", "policy_code" = "Policy Code", 
                    "issue_d" = "Application Date"))
+# select only features that we're interested in. 
 accepted <- accepted[c("Amount Requested", "Loan Title", "Debt-To-Income Ratio", 
                        "State", "Employment Length", "Policy Code", "Application Date")]
 declined <- declined[c("Amount Requested", "Loan Title", "Debt-To-Income Ratio", 

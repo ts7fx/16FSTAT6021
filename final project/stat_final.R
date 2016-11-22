@@ -12,7 +12,7 @@ library(car)
 library(ROCR)
 library(pROC)
 
-# https://www.lendingclub.com/info/download-data.action  <-- download data
+# https://www.lendingclub.com/info/download-data.action  <-- download data 2015 
 setwd("~/Downloads")
 
 declined <- read_csv('RejectStatsD.csv', skip = 1) # skip the first line where there's a note. 
@@ -23,12 +23,6 @@ sum(is.na(declined$`Amount Requested`)) / nrow(declined) # none missing
 sum(is.na(declined$`Loan Title`)) / nrow(declined) # none missing
 sum(is.na(declined$`Debt-To-Income Ratio`)) / nrow(declined) # none missing
 sum(is.na(declined$State)) / nrow(declined) # none missing
-
-# 1. we have to deal with missing data in risk_score, 
-#   a. get rid of the col
-#   b. treat missing value
-#   c. do both, and compare results. 
-
 
 # read the accepted dataset
 accepted <- read_csv('LoanStats3d.csv', skip = 1) # skip the first line where there's a note. 
@@ -129,11 +123,11 @@ loan$title <- relevel(loan$title, "other")
 loan$emp_length <- relevel(loan$emp_length, "n/a")
 
 # logistic regression building
-log.fit = glm(result ~ ., data = loan, family="binomial")
+log.fit = glm(result ~ ., data = loan, family="binomial")#date and state are insignificant
 summary(log.fit)
-log.fit.2 = glm(result ~ .-state, data = loan, family="binomial")
+log.fit.2 = glm(result ~ .-state, data = loan, family="binomial")#testing w date removed
 
-log.fit.3 = glm(result ~ .-state -date -pol_code, data = loan, family="binomial")
+log.fit.3 = glm(result ~ .-state -date -pol_code, data = loan, family="binomial")#removed state and date and policy code
 summary(log.fit.3)
 
 #testing multicollinearity.

@@ -9,6 +9,8 @@ library(readr)
 library(plyr)
 library(MASS)
 library(car)
+library(ROCR)
+library(pROC)
 
 # https://www.lendingclub.com/info/download-data.action  <-- download data
 setwd("~/Downloads")
@@ -165,7 +167,13 @@ exp(coef(log.fit.3))
 
 # ROC curves
 
+# Predict loan acceptance using data from Q1, Q2, and Q3 from 2016
 
+predict_loan_16 <- loan_16[c("amt_request", "title", "dti", "state", "emp_length", "pol_code", "date")]
+
+predict1 <- predict(log.fit.3, data =predict_loan_16 , type="response")
+ROC1 <- roc(loan_16$result[1:3280474], predict1)
+plot(ROC1, col = "blue", main = "ROC Curve")
 
 
 

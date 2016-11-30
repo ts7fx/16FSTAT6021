@@ -169,10 +169,6 @@ predict_loan_16 <- loan_16[c("amt_request", "title", "dti", "state", "emp_length
 
 predict1 <- predict(log.fit.3, data =predict_loan_16 , type="response")
 
-predict1final <- as.data.frame(predict1)
-predict1final$predict1[predict1final$predict1 < .5] <- 0
-predict1final$predict1[predict1final$predict1 > .5] <- 1
-
 
 ROC1 <- roc(loan_16$result[1:3280474], predict1)
 plot(ROC1, col = "blue", main = "ROC Curve")
@@ -180,6 +176,11 @@ plot(ROC1, col = "blue", main = "ROC Curve")
 
 # Confusion matrix
 
+predict1final <- as.data.frame(predict1)
+
+# chose cut-off probability score of 50% to determine whether response was a 0 or 1
+predict1final$predict1[predict1final$predict1 < .5] <- 0
+predict1final$predict1[predict1final$predict1 > .5] <- 1
 
 conf <- confusionMatrix(predict1final$predict1, loan_16$result[1:3280474])
 conf

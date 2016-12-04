@@ -165,7 +165,7 @@ exp(coef(log.fit.3))
 
 predict_loan_16 <- loan_16[c("amt_request", "title", "dti", "state", "emp_length", "pol_code", "date")]
 
-predict1 <- predict(log.fit.3, data =predict_loan_16 , type="response")
+predict_loan_16$predict <- predict(log.fit.3, data = predict_loan_16 , type="response")
 ROC1 <- roc(loan_16$result[1:3280474], predict1)
 plot(ROC1, col = "blue", main = "ROC Curve")
 

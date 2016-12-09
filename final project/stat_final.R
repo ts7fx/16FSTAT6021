@@ -165,16 +165,33 @@ exp(coef(log.fit.3))
 
 # Predict loan acceptance using data from Q1, Q2, and Q3 from 2016
 
-predict_loan_16 <- loan_16[c("amt_request", "title", "dti", "state", "emp_length", "pol_code", "date")]
+predict_loan_16 <- loan_16[c("amt_request", "title", "state", "dti","pol_code", "emp_length", "date")]
 
-<<<<<<< HEAD
+predict_loan_16 <- predict_loan_16[!predict_loan_16$emp_length == "n/a", ]
+
 predict_loan_16$predict <- predict(log.fit.3, data = predict_loan_16 , type="response")
-=======
+
 predict1 <- predict(log.fit.3, data =predict_loan_16 , type="response")
 
 
->>>>>>> 960c6cb12e6cd692e6aa467dcbe19446c381ef55
+predict_loan_16 <- predict_loan_16[!predict_loan_16$state == "IA", ]
+predict_loan_16 <- predict_loan_16[!predict_loan_16$state == "ID", ]
+
+
+
+loan_162 <- loan_16[!loan_16$emp_length == "n/a", ]
+
+loan_162 <- loan_162[!loan_162$state == "IA", ]
+loan_162 <- loan_162[!loan_162$state == "ID", ]
+
+predict1 <- predict(log.fit.3, predict_loan_16 , type="response")
+
+
 ROC1 <- roc(loan_16$result[1:3280474], predict1)
+plot(ROC1, col = "blue", main = "ROC Curve")
+
+
+ROC1 <- roc(loan_162$result, predict1)
 plot(ROC1, col = "blue", main = "ROC Curve")
 
 
@@ -186,8 +203,42 @@ predict1final <- as.data.frame(predict1)
 predict1final$predict1[predict1final$predict1 < .5] <- 0
 predict1final$predict1[predict1final$predict1 > .5] <- 1
 
-conf <- confusionMatrix(predict1final$predict1, loan_16$result[1:3280474])
+conf <- confusionMatrix(predict1final$predict1, loan_162$result)
 conf
+
+
+
+
+########### Interaction for presentation ###########
+
+## Don't change these ##
+state <- "VA"
+pol <- 0
+date1 <- as.yearqtr(Sys.Date())
+
+
+# Enter variables
+amt_requested <- 1000 #replace with amount
+titles <- "credit_card" #replace with chosen title
+debt_to_income <- 0 #replace with dti"
+em_length <- "9 years" #replace with employment length"
+
+
+
+prediction_frame <- as.data.frame(amt_requested)
+names(prediction_frame)[names(prediction_frame) == 'amt_requested'] <- 'amt_request'
+prediction_frame["title"] <- titles
+prediction_frame["dti"] <- debt_to_income
+prediction_frame["emp_length"] <- em_length
+prediction_frame["state"] <- state
+prediction_frame["pol_code"] <- pol
+prediction_frame["date"] <- date1
+
+
+predict(log.fit.3, prediction_frame, type="response")
+
+
+
 
 
 
